@@ -56,7 +56,7 @@ jobs:
         install: ${{ matrix.prefix }}-binutils ${{ matrix.prefix }}-make ${{ matrix.prefix }}-${{ matrix.cc }}
         msystem: ${{ matrix.msystem }}
         path-type: minimal
-        release: true
+        release: false
         update: false
 
     - uses: actions/checkout@v3.1.0

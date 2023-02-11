@@ -93,17 +93,20 @@ jobs:
             suffix: .arm64
             pkg_suffix: arm64
             os: windows-latest
+            msvc: msvc2017
 
           - arch: x64
             platform: x64
             suffix: .x64
             pkg_suffix: x86_64
             os: windows-latest
+            msvc: msvc2017
             
           - arch: x86
             platform: Win32
             pkg_suffix: x86
             os: windows-2019
+            msvc: msvc2017
 
     steps:
 
@@ -117,19 +120,19 @@ jobs:
       if: ${{ github.event_name != 'release' || matrix.btype != 'Debug' }} # skip Debug configuration in Release build
       run: |
         mkdir bin
-        msbuild code\win32\msvc2017\quake3e-ded.vcxproj -p:TargetName=quake3e.ded,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }}
-        copy code\win32\msvc2017\output\quake3e.ded.exe bin\quake3e.ded${{ matrix.suffix }}.exe
-        msbuild code\win32\msvc2017\quake3e-ded.vcxproj -p:TargetName=quake3e.ded,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }} -t:Clean
-        msbuild code\win32\msvc2017\renderer.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }}
-        msbuild code\win32\msvc2017\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0
-        copy code\win32\msvc2017\output\quake3e.exe bin\quake3e${{ matrix.suffix }}.exe
-        msbuild code\win32\msvc2017\renderer.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }} -t:Clean
-        msbuild code\win32\msvc2017\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0 -t:Clean
-        msbuild code\win32\msvc2017\renderervk.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }}
-        msbuild code\win32\msvc2017\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0
-        copy code\win32\msvc2017\output\quake3e.exe bin\quake3e-vulkan${{ matrix.suffix }}.exe
-        msbuild code\win32\msvc2017\renderervk.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }} -t:Clean
-        msbuild code\win32\msvc2017\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0 -t:Clean
+        msbuild code\win32\${{ matrix.msvc }}\quake3e-ded.vcxproj -p:TargetName=quake3e.ded,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }}
+        copy code\win32\${{ matrix.msvc }}\output\quake3e.ded.exe bin\quake3e.ded${{ matrix.suffix }}.exe
+        msbuild code\win32\${{ matrix.msvc }}\quake3e-ded.vcxproj -p:TargetName=quake3e.ded,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }} -t:Clean
+        msbuild code\win32\${{ matrix.msvc }}\renderer.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }}
+        msbuild code\win32\${{ matrix.msvc }}\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0
+        copy code\win32\${{ matrix.msvc }}\output\quake3e.exe bin\quake3e${{ matrix.suffix }}.exe
+        msbuild code\win32\${{ matrix.msvc }}\renderer.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }} -t:Clean
+        msbuild code\win32\${{ matrix.msvc }}\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0 -t:Clean
+        msbuild code\win32\${{ matrix.msvc }}\renderervk.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }}
+        msbuild code\win32\${{ matrix.msvc }}\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0
+        copy code\win32\${{ matrix.msvc }}\output\quake3e.exe bin\quake3e-vulkan${{ matrix.suffix }}.exe
+        msbuild code\win32\${{ matrix.msvc }}\renderervk.vcxproj -p:Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }} -t:Clean
+        msbuild code\win32\${{ matrix.msvc }}\quake3e.vcxproj -p:TargetName=quake3e,Configuration=${{ matrix.btype }},Platform=${{ matrix.platform }},UseWasapi=USE_WASAPI=0 -t:Clean
     - uses: actions/upload-artifact@v3.1.1
       if: ${{ matrix.btype == 'release' }}
       with:
